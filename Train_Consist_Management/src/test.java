@@ -5,41 +5,23 @@ import java.util.*;
 public class test {
 
     @Test
-    void testSearch_BogieExists() {
+    void testTotalSeats_Calculation() {
         List<Train_Consist_Management.Bogie> list = Arrays.asList(
-                new Train_Consist_Management.Bogie("Sleeper", 72),
-                new Train_Consist_Management.Bogie("General", 90)
+                new Train_Consist_Management.Bogie("S1", 50),
+                new Train_Consist_Management.Bogie("S2", 50)
         );
 
-        Optional<Train_Consist_Management.Bogie> result = list.stream()
-                .filter(b -> b.name.equals("Sleeper"))
-                .findFirst();
+        int total = list.stream().mapToInt(b -> b.capacity).sum();
 
-        assertTrue(result.isPresent(), "Bogie should be found");
-        assertEquals(72, result.get().capacity);
+        assertEquals(100, total, "The sum of 50 + 50 should be 100");
     }
 
     @Test
-    void testSearch_BogieDoesNotExist() {
-        List<Train_Consist_Management.Bogie> list = Arrays.asList(
-                new Train_Consist_Management.Bogie("Sleeper", 72)
-        );
+    void testTotalSeats_EmptyList() {
+        List<Train_Consist_Management.Bogie> emptyList = new ArrayList<>();
 
-        Optional<Train_Consist_Management.Bogie> result = list.stream()
-                .filter(b -> b.name.equals("Pantry"))
-                .findFirst();
+        int total = emptyList.stream().mapToInt(b -> b.capacity).sum();
 
-        assertFalse(result.isPresent(), "Search should return empty for non-existent bogie");
-    }
-
-    @Test
-    void testSearch_EmptyList() {
-        List<Train_Consist_Management.Bogie> list = new ArrayList<>();
-
-        Optional<Train_Consist_Management.Bogie> result = list.stream()
-                .filter(b -> b.name.equals("Sleeper"))
-                .findFirst();
-
-        assertTrue(result.isEmpty(), "Searching an empty list should return an empty Optional");
+        assertEquals(0, total, "An empty train should have 0 seats");
     }
 }

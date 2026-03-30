@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Train_Consist_Management {
 
@@ -14,13 +13,13 @@ public class Train_Consist_Management {
 
         @Override
         public String toString() {
-            return name + " (Capacity: " + capacity + ")";
+            return name + " -> " + capacity;
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==============================================");
-        System.out.println(" UC9 - Search Passenger Bogie by Name ");
+        System.out.println(" UC10 - Count Total Seats in Train (Reduce) ");
         System.out.println("==============================================\n");
 
         List<Bogie> bogies = new ArrayList<>();
@@ -29,22 +28,17 @@ public class Train_Consist_Management {
         bogies.add(new Bogie("First Class", 24));
         bogies.add(new Bogie("General", 90));
 
-        // Search Target
-        String searchName = "AC Chair";
-        System.out.println("Searching for: " + searchName);
+        System.out.println("Current Consist:");
+        bogies.forEach(System.out::println);
 
-        // UC9 Logic: Use Stream to find a specific bogie by name
-        Optional<Bogie> result = bogies.stream()
-                .filter(b -> b.name.equalsIgnoreCase(searchName))
-                .findFirst();
+        // UC10 Logic: Map to int and sum
+        // .mapToInt extracts the capacity field
+        // .sum() is a specialized reduction for numbers
+        int totalSeats = bogies.stream()
+                .mapToInt(b -> b.capacity)
+                .sum();
 
-        // Display Result
-        if (result.isPresent()) {
-            System.out.println("Bogie Found: " + result.get());
-        } else {
-            System.out.println("Bogie not found in the consist.");
-        }
-
-        System.out.println("\nUC9 searching completed...");
+        System.out.println("\nTotal Seating Capacity: " + totalSeats);
+        System.out.println("\nUC10 calculation completed...");
     }
 }
