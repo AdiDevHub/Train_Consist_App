@@ -1,29 +1,26 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
 
 public class test {
 
     @Test
-    void testSafety_WithinLimit() {
-        Train_Consist_Management.GoodsBogie safeBogie =
-                new Train_Consist_Management.GoodsBogie("TEST01", 40.0, 50.0);
+    void testPerformance_ResultsMatch() {
+        List<Train_Consist_Management.Bogie> list = Arrays.asList(
+                new Train_Consist_Management.Bogie(10),
+                new Train_Consist_Management.Bogie(20),
+                new Train_Consist_Management.Bogie(30)
+        );
 
-        assertTrue(safeBogie.isSafetyCompliant(), "Bogie within limit should be compliant");
-    }
+        // Calculate using loop
+        int loopTotal = 0;
+        for (Train_Consist_Management.Bogie b : list) {
+            loopTotal += b.capacity;
+        }
 
-    @Test
-    void testSafety_OverLimit() {
-        Train_Consist_Management.GoodsBogie heavyBogie =
-                new Train_Consist_Management.GoodsBogie("TEST02", 60.0, 50.0);
+        // Calculate using stream
+        int streamTotal = list.stream().mapToInt(b -> b.capacity).sum();
 
-        assertFalse(heavyBogie.isSafetyCompliant(), "Bogie exceeding limit should NOT be compliant");
-    }
-
-    @Test
-    void testSafety_ExactlyAtLimit() {
-        Train_Consist_Management.GoodsBogie limitBogie =
-                new Train_Consist_Management.GoodsBogie("TEST03", 50.0, 50.0);
-
-        assertTrue(limitBogie.isSafetyCompliant(), "Bogie exactly at the limit should still be compliant");
+        assertEquals(loopTotal, streamTotal, "Both methods must return the same total capacity");
     }
 }

@@ -2,46 +2,45 @@ import java.util.*;
 
 public class Train_Consist_Management {
 
-    static class GoodsBogie {
-        String id;
-        double currentWeight;
-        double maxLimit;
-
-        public GoodsBogie(String id, double currentWeight, double maxLimit) {
-            this.id = id;
-            this.currentWeight = currentWeight;
-            this.maxLimit = maxLimit;
-        }
-
-        // UC12 Logic: Safety Check
-        public boolean isSafetyCompliant() {
-            return currentWeight <= maxLimit;
-        }
-
-        @Override
-        public String toString() {
-            return "Bogie " + id + " [Weight: " + currentWeight + "/" + maxLimit + "]";
-        }
+    static class Bogie {
+        int capacity;
+        public Bogie(int capacity) { this.capacity = capacity; }
     }
 
     public static void main(String[] args) {
         System.out.println("==============================================");
-        System.out.println(" UC12 - Safety Compliance Check (Goods) ");
+        System.out.println(" UC13 - Performance: Loops vs Streams ");
         System.out.println("==============================================\n");
 
-        List<GoodsBogie> inventory = new ArrayList<>();
-        inventory.add(new GoodsBogie("G101", 45.5, 50.0)); // Compliant
-        inventory.add(new GoodsBogie("G102", 55.0, 50.0)); // Overloaded
-
-        for (GoodsBogie bogie : inventory) {
-            System.out.print(bogie);
-            if (bogie.isSafetyCompliant()) {
-                System.out.println(" -> SAFE");
-            } else {
-                System.out.println(" -> DANGER: OVERLOADED");
-            }
+        // 1. Prepare a large dataset (100,000 bogies)
+        List<Bogie> largeConsist = new ArrayList<>();
+        for (int i = 0; i < 100_000; i++) {
+            largeConsist.add(new Bogie(72));
         }
 
-        System.out.println("\nUC12 compliance check completed...");
+        // 2. Benchmark Traditional Loop
+        long startLoop = System.nanoTime();
+        int totalLoop = 0;
+        for (Bogie b : largeConsist) {
+            totalLoop += b.capacity;
+        }
+        long endLoop = System.nanoTime();
+        long loopDuration = endLoop - startLoop;
+
+        // 3. Benchmark Stream API
+        long startStream = System.nanoTime();
+        int totalStream = largeConsist.stream().mapToInt(b -> b.capacity).sum();
+        long endStream = System.nanoTime();
+        long streamDuration = endStream - startStream;
+
+        // 4. Results
+        System.out.println("Total (Loop): " + totalLoop + " | Time: " + loopDuration + " ns");
+        System.out.println("Total (Stream): " + totalStream + " | Time: " + streamDuration + " ns");
+
+        if (loopDuration < streamDuration) {
+            System.out.println("\nResult: Traditional Loop was faster by " + (streamDuration - loopDuration) + " ns");
+        } else {
+            System.out.println("\nResult: Stream API was faster by " + (loopDuration - streamDuration) + " ns");
+        }
     }
 }
