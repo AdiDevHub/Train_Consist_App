@@ -1,46 +1,50 @@
 import java.util.*;
 
+// Custom Exception Class
+class InvalidBogieCapacityException extends Exception {
+    public InvalidBogieCapacityException(String message) {
+        super(message);
+    }
+}
+
 public class Train_Consist_Management {
 
     static class Bogie {
+        String name;
         int capacity;
-        public Bogie(int capacity) { this.capacity = capacity; }
+
+        public Bogie(String name, int capacity) throws InvalidBogieCapacityException {
+            if (capacity < 0) {
+                throw new InvalidBogieCapacityException("Capacity cannot be negative: " + capacity);
+            }
+            this.name = name;
+            this.capacity = capacity;
+        }
+
+        @Override
+        public String toString() {
+            return name + " (Seats: " + capacity + ")";
+        }
     }
 
     public static void main(String[] args) {
         System.out.println("==============================================");
-        System.out.println(" UC13 - Performance: Loops vs Streams ");
+        System.out.println(" UC14 - Handle Invalid Bogie Capacity ");
         System.out.println("==============================================\n");
 
-        // 1. Prepare a large dataset (100,000 bogies)
-        List<Bogie> largeConsist = new ArrayList<>();
-        for (int i = 0; i < 100_000; i++) {
-            largeConsist.add(new Bogie(72));
+        try {
+            // Case 1: Valid Bogie
+            Bogie valid = new Bogie("Sleeper", 72);
+            System.out.println("Created: " + valid);
+
+            // Case 2: Invalid Bogie (This will trigger the catch block)
+            System.out.println("Attempting to create invalid bogie...");
+            Bogie invalid = new Bogie("Ghost Bogie", -10);
+
+        } catch (InvalidBogieCapacityException e) {
+            System.err.println("SAFETY ALERT: " + e.getMessage());
         }
 
-        // 2. Benchmark Traditional Loop
-        long startLoop = System.nanoTime();
-        int totalLoop = 0;
-        for (Bogie b : largeConsist) {
-            totalLoop += b.capacity;
-        }
-        long endLoop = System.nanoTime();
-        long loopDuration = endLoop - startLoop;
-
-        // 3. Benchmark Stream API
-        long startStream = System.nanoTime();
-        int totalStream = largeConsist.stream().mapToInt(b -> b.capacity).sum();
-        long endStream = System.nanoTime();
-        long streamDuration = endStream - startStream;
-
-        // 4. Results
-        System.out.println("Total (Loop): " + totalLoop + " | Time: " + loopDuration + " ns");
-        System.out.println("Total (Stream): " + totalStream + " | Time: " + streamDuration + " ns");
-
-        if (loopDuration < streamDuration) {
-            System.out.println("\nResult: Traditional Loop was faster by " + (streamDuration - loopDuration) + " ns");
-        } else {
-            System.out.println("\nResult: Stream API was faster by " + (loopDuration - streamDuration) + " ns");
-        }
+        System.out.println("\nUC14 exception handling completed...");
     }
 }

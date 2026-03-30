@@ -1,26 +1,25 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.*;
 
 public class test {
 
     @Test
-    void testPerformance_ResultsMatch() {
-        List<Train_Consist_Management.Bogie> list = Arrays.asList(
-                new Train_Consist_Management.Bogie(10),
-                new Train_Consist_Management.Bogie(20),
-                new Train_Consist_Management.Bogie(30)
-        );
+    void testBogie_ValidCapacity() {
+        assertDoesNotThrow(() -> {
+            new Train_Consist_Management.Bogie("Sleeper", 72);
+        }, "Valid capacity should not throw an exception");
+    }
 
-        // Calculate using loop
-        int loopTotal = 0;
-        for (Train_Consist_Management.Bogie b : list) {
-            loopTotal += b.capacity;
-        }
+    @Test
+    void testBogie_NegativeCapacityThrowsException() {
+        // Verify that the custom exception is thrown
+        Exception exception = assertThrows(InvalidBogieCapacityException.class, () -> {
+            new Train_Consist_Management.Bogie("ErrorBogie", -1);
+        });
 
-        // Calculate using stream
-        int streamTotal = list.stream().mapToInt(b -> b.capacity).sum();
+        String expectedMessage = "Capacity cannot be negative";
+        String actualMessage = exception.getMessage();
 
-        assertEquals(loopTotal, streamTotal, "Both methods must return the same total capacity");
+        assertTrue(actualMessage.contains(expectedMessage), "Error message should mention negative capacity");
     }
 }
