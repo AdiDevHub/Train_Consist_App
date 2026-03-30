@@ -4,24 +4,26 @@ import static org.junit.jupiter.api.Assertions.*;
 public class test {
 
     @Test
-    void testValidateTrainID() {
-        // Valid case
-        assertTrue(Train_Consist_Management.validateTrainID("55667"), "Should be valid: 5 digits");
+    void testSafety_WithinLimit() {
+        Train_Consist_Management.GoodsBogie safeBogie =
+                new Train_Consist_Management.GoodsBogie("TEST01", 40.0, 50.0);
 
-        // Invalid cases
-        assertFalse(Train_Consist_Management.validateTrainID("123"), "Too short");
-        assertFalse(Train_Consist_Management.validateTrainID("123456"), "Too long");
-        assertFalse(Train_Consist_Management.validateTrainID("A1234"), "Contains letters");
+        assertTrue(safeBogie.isSafetyCompliant(), "Bogie within limit should be compliant");
     }
 
     @Test
-    void testValidateCargoCode() {
-        // Valid case
-        assertTrue(Train_Consist_Management.validateCargoCode("BOX456"), "Should be valid: 3 letters + 3 digits");
+    void testSafety_OverLimit() {
+        Train_Consist_Management.GoodsBogie heavyBogie =
+                new Train_Consist_Management.GoodsBogie("TEST02", 60.0, 50.0);
 
-        // Invalid cases
-        assertFalse(Train_Consist_Management.validateCargoCode("box456"), "Letters must be uppercase");
-        assertFalse(Train_Consist_Management.validateCargoCode("B12345"), "Must start with 3 letters");
-        assertFalse(Train_Consist_Management.validateCargoCode("CRG99"), "Digits must be exactly 3");
+        assertFalse(heavyBogie.isSafetyCompliant(), "Bogie exceeding limit should NOT be compliant");
+    }
+
+    @Test
+    void testSafety_ExactlyAtLimit() {
+        Train_Consist_Management.GoodsBogie limitBogie =
+                new Train_Consist_Management.GoodsBogie("TEST03", 50.0, 50.0);
+
+        assertTrue(limitBogie.isSafetyCompliant(), "Bogie exactly at the limit should still be compliant");
     }
 }

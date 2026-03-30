@@ -2,29 +2,46 @@ import java.util.*;
 
 public class Train_Consist_Management {
 
-    // Method to validate Train ID (5 Digits)
-    public static boolean validateTrainID(String trainID) {
-        return trainID.matches("\\d{5}");
-    }
+    static class GoodsBogie {
+        String id;
+        double currentWeight;
+        double maxLimit;
 
-    // Method to validate Cargo Code (3 Letters + 3 Digits)
-    public static boolean validateCargoCode(String cargoCode) {
-        return cargoCode.matches("[A-Z]{3}\\d{3}");
+        public GoodsBogie(String id, double currentWeight, double maxLimit) {
+            this.id = id;
+            this.currentWeight = currentWeight;
+            this.maxLimit = maxLimit;
+        }
+
+        // UC12 Logic: Safety Check
+        public boolean isSafetyCompliant() {
+            return currentWeight <= maxLimit;
+        }
+
+        @Override
+        public String toString() {
+            return "Bogie " + id + " [Weight: " + currentWeight + "/" + maxLimit + "]";
+        }
     }
 
     public static void main(String[] args) {
         System.out.println("==============================================");
-        System.out.println(" UC11 - Validate Train ID & Cargo Codes ");
+        System.out.println(" UC12 - Safety Compliance Check (Goods) ");
         System.out.println("==============================================\n");
 
-        String testID = "12345";
-        String testCargo = "CRG999";
+        List<GoodsBogie> inventory = new ArrayList<>();
+        inventory.add(new GoodsBogie("G101", 45.5, 50.0)); // Compliant
+        inventory.add(new GoodsBogie("G102", 55.0, 50.0)); // Overloaded
 
-        System.out.println("Train ID " + testID + " valid? " + validateTrainID(testID));
-        System.out.println("Cargo Code " + testCargo + " valid? " + validateCargoCode(testCargo));
+        for (GoodsBogie bogie : inventory) {
+            System.out.print(bogie);
+            if (bogie.isSafetyCompliant()) {
+                System.out.println(" -> SAFE");
+            } else {
+                System.out.println(" -> DANGER: OVERLOADED");
+            }
+        }
 
-        // Testing an invalid case
-        String badID = "ABC12";
-        System.out.println("Train ID " + badID + " valid? " + validateTrainID(badID));
+        System.out.println("\nUC12 compliance check completed...");
     }
 }
