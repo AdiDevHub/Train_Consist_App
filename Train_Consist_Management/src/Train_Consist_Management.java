@@ -3,7 +3,6 @@ import java.util.stream.Collectors;
 
 public class Train_Consist_Management {
 
-    // Reusing Bogie model from UC7
     static class Bogie {
         String name;
         int capacity;
@@ -15,38 +14,37 @@ public class Train_Consist_Management {
 
         @Override
         public String toString() {
-            return name + " -> " + capacity;
+            return name + " (Capacity: " + capacity + ")";
         }
     }
 
     public static void main(String[] args) {
         System.out.println("==============================================");
-        System.out.println(" UC8 - Filter Passenger Bogies Using Streams ");
+        System.out.println(" UC9 - Search Passenger Bogie by Name ");
         System.out.println("==============================================\n");
 
-        // 1. Create list of bogies
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 24));
         bogies.add(new Bogie("General", 90));
 
-        // 2. Display All Bogies
-        System.out.println("All Bogies:");
-        bogies.forEach(System.out::println);
+        // Search Target
+        String searchName = "AC Chair";
+        System.out.println("Searching for: " + searchName);
 
-        // 3. Use Stream API to filter (Capacity > 60)
-        // .stream() -> converts list to stream
-        // .filter() -> applies the condition
-        // .collect() -> converts stream back to a new List
-        List<Bogie> filteredBogies = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
+        // UC9 Logic: Use Stream to find a specific bogie by name
+        Optional<Bogie> result = bogies.stream()
+                .filter(b -> b.name.equalsIgnoreCase(searchName))
+                .findFirst();
 
-        // 4. Display Filtered Result
-        System.out.println("\nFiltered Bogies (Capacity > 60):");
-        filteredBogies.forEach(System.out::println);
+        // Display Result
+        if (result.isPresent()) {
+            System.out.println("Bogie Found: " + result.get());
+        } else {
+            System.out.println("Bogie not found in the consist.");
+        }
 
-        System.out.println("\nUC8 filtering completed...");
+        System.out.println("\nUC9 searching completed...");
     }
 }
