@@ -1,27 +1,27 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.*;
 
 public class test {
 
     @Test
-    void testTotalSeats_Calculation() {
-        List<Train_Consist_Management.Bogie> list = Arrays.asList(
-                new Train_Consist_Management.Bogie("S1", 50),
-                new Train_Consist_Management.Bogie("S2", 50)
-        );
+    void testValidateTrainID() {
+        // Valid case
+        assertTrue(Train_Consist_Management.validateTrainID("55667"), "Should be valid: 5 digits");
 
-        int total = list.stream().mapToInt(b -> b.capacity).sum();
-
-        assertEquals(100, total, "The sum of 50 + 50 should be 100");
+        // Invalid cases
+        assertFalse(Train_Consist_Management.validateTrainID("123"), "Too short");
+        assertFalse(Train_Consist_Management.validateTrainID("123456"), "Too long");
+        assertFalse(Train_Consist_Management.validateTrainID("A1234"), "Contains letters");
     }
 
     @Test
-    void testTotalSeats_EmptyList() {
-        List<Train_Consist_Management.Bogie> emptyList = new ArrayList<>();
+    void testValidateCargoCode() {
+        // Valid case
+        assertTrue(Train_Consist_Management.validateCargoCode("BOX456"), "Should be valid: 3 letters + 3 digits");
 
-        int total = emptyList.stream().mapToInt(b -> b.capacity).sum();
-
-        assertEquals(0, total, "An empty train should have 0 seats");
+        // Invalid cases
+        assertFalse(Train_Consist_Management.validateCargoCode("box456"), "Letters must be uppercase");
+        assertFalse(Train_Consist_Management.validateCargoCode("B12345"), "Must start with 3 letters");
+        assertFalse(Train_Consist_Management.validateCargoCode("CRG99"), "Digits must be exactly 3");
     }
 }

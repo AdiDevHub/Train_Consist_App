@@ -2,43 +2,29 @@ import java.util.*;
 
 public class Train_Consist_Management {
 
-    static class Bogie {
-        String name;
-        int capacity;
+    // Method to validate Train ID (5 Digits)
+    public static boolean validateTrainID(String trainID) {
+        return trainID.matches("\\d{5}");
+    }
 
-        public Bogie(String name, int capacity) {
-            this.name = name;
-            this.capacity = capacity;
-        }
-
-        @Override
-        public String toString() {
-            return name + " -> " + capacity;
-        }
+    // Method to validate Cargo Code (3 Letters + 3 Digits)
+    public static boolean validateCargoCode(String cargoCode) {
+        return cargoCode.matches("[A-Z]{3}\\d{3}");
     }
 
     public static void main(String[] args) {
         System.out.println("==============================================");
-        System.out.println(" UC10 - Count Total Seats in Train (Reduce) ");
+        System.out.println(" UC11 - Validate Train ID & Cargo Codes ");
         System.out.println("==============================================\n");
 
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("General", 90));
+        String testID = "12345";
+        String testCargo = "CRG999";
 
-        System.out.println("Current Consist:");
-        bogies.forEach(System.out::println);
+        System.out.println("Train ID " + testID + " valid? " + validateTrainID(testID));
+        System.out.println("Cargo Code " + testCargo + " valid? " + validateCargoCode(testCargo));
 
-        // UC10 Logic: Map to int and sum
-        // .mapToInt extracts the capacity field
-        // .sum() is a specialized reduction for numbers
-        int totalSeats = bogies.stream()
-                .mapToInt(b -> b.capacity)
-                .sum();
-
-        System.out.println("\nTotal Seating Capacity: " + totalSeats);
-        System.out.println("\nUC10 calculation completed...");
+        // Testing an invalid case
+        String badID = "ABC12";
+        System.out.println("Train ID " + badID + " valid? " + validateTrainID(badID));
     }
 }
